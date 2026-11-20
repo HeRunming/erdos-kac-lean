@@ -6,9 +6,11 @@ project:
     A complete formalisation, in Lean 4 with Mathlib, of the Erdős–Kac theorem:
     the number of distinct prime factors ω(n), centred by log log N and scaled by
     sqrt(log log N), satisfies a central limit theorem on {1, …, N}. The proof goes
-    through Mertens' second theorem, a truncated sieve moment comparison against an
-    independent-prime model, convergence of the model characteristic function, and
-    Lévy's continuity theorem.
+    through Mertens' second theorem and a truncated sieve whose moments are
+    compared with an independent-prime model. Moment comparison is carried over to
+    characteristic functions by a Taylor truncation of exp(iτs), whose remainder
+    is controlled by a uniform even-moment bound; the model characteristic
+    function converges to the Gaussian, and Lévy's continuity theorem finishes.
   authors:
     - "Runming He"
   license: "Apache-2.0"

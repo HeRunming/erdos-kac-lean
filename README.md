@@ -40,11 +40,22 @@ not the original argument of Erdős and Kac.
    formula for n!, and Abel summation give Σ_{p ≤ n} 1/p = log log n + O(1).
 2. **Truncation** (`ek_trunc*`, `ek_center`): primes above
    x = exp(log N / log log log N) change ω(n) by a negligible amount.
-3. **Sieve against model** (`ek_mc_*`, `ek_moment_compare`): moments of the
-   truncated count agree with those of a sum of independent Bernoulli variables.
-4. **Model limit** (`ek_ml_*`, `ek_model_limit`): the model's characteristic
+3. **Sieve against model** (`ek_mc_*`, `ek_moment_compare`): the first 2K−1
+   moments of the truncated count agree with those of a sum of independent
+   Bernoulli variables.
+4. **Characteristic functions** (`ek_cf_aux_taylor`, `ek_cf_moment_compare`):
+   truncating exp(iτs) at order 2K bounds the difference of the sieve and model
+   characteristic functions by the first 2K−1 moment differences plus a
+   remainder controlled by the 2K-th moments. This is the step that carries
+   moment information over to characteristic functions; moment comparison alone
+   does not give convergence.
+5. **Uniform moment bound** (`ek_model_moment_bound`, `ek_sieve_model`): a
+   uniform even-moment bound for the model lets K be fixed first, which makes
+   the remainder as small as required, after which the finitely many moment
+   differences tend to zero.
+6. **Model limit** (`ek_ml_*`, `ek_model_limit`): the model's characteristic
    function tends to exp(−t²/2).
-5. **Lévy continuity** (`levy_continuity_Icc`, `levy_counting`): convergence of
+7. **Lévy continuity** (`levy_continuity_Icc`, `levy_counting`): convergence of
    characteristic functions gives convergence on intervals.
 
 ## How this was produced
