@@ -92,6 +92,10 @@ jobs:
     name: Build API documentation
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # Generating doc-gen4 for the whole Mathlib closure exhausts the memory of a
+    # standard GitHub runner. Documentation is not used by Palomar, so a failure
+    # here must not turn the build red.
+    continue-on-error: true
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
