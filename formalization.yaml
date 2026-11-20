@@ -1,0 +1,140 @@
+version: "v0.4"
+
+project:
+  name: "Erdős–Kac theorem"
+  description: >-
+    A complete formalisation, in Lean 4 with Mathlib, of the Erdős–Kac theorem:
+    the number of distinct prime factors ω(n), centred by log log N and scaled by
+    sqrt(log log N), satisfies a central limit theorem on {1, …, N}. The proof goes
+    through Mertens' second theorem, a truncated sieve moment comparison against an
+    independent-prime model, convergence of the model characteristic function, and
+    Lévy's continuity theorem.
+  authors:
+    - "Runming He"
+  license: "Apache-2.0"
+  responsible_maintainers:
+    - "Runming He"
+
+classification:
+  arxiv: ["math.NT", "math.PR"]
+  msc2020: ["11K65", "60F05"]
+
+sources:
+  - title: "The Gaussian law of errors in the theory of additive number theoretic functions"
+    authors:
+      - "Paul Erdős"
+      - "Mark Kac"
+    type: "article"
+    location: "American Journal of Mathematics 62 (1940), 738–742"
+    relationship: "formalizes"
+    note: >-
+      The formalised statement is the theorem of this paper. The proof formalised
+      here is not the argument of the paper; see the background source below.
+    license: "unknown"
+    author_endorsement: "not-contacted"
+  - title: "Sieving and the Erdős–Kac theorem"
+    authors:
+      - "Andrew Granville"
+      - "K. Soundararajan"
+    id: "arXiv:math/0606039"
+    type: "article"
+    location: "Equidistribution in Number Theory, an Introduction, NATO Science Series II 237 (2007), 15–27"
+    relationship: "background"
+    note: >-
+      Source of the proof strategy actually formalised: sieve moment comparison
+      against a model distribution, then a characteristic-function argument.
+    license: "unknown"
+    author_endorsement: "not-contacted"
+
+related_formalizations: []
+
+status:
+  scope: >-
+    Formalises the full asymptotic statement for real a < b. No weaker variant, no
+    added hypotheses, no omitted cases. ω is taken to be
+    ArithmeticFunction.cardDistinctFactors. The supporting development also proves
+    Mertens' second theorem (sum over primes p ≤ n of 1/p = log log n + O(1)) and a
+    concrete form of Lévy's continuity theorem for probability measures on ℝ.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: ["propext", "Classical.choice", "Quot.sound"]
+
+automation:
+  methods:
+    - method: "agent"
+      models: ["claude-opus-5.5"]
+      framework: "FolioCert Prove (MAESTRO multi-agent coordinator)"
+      tool_setup: >-
+        A coordinator agent decomposed the target into Lean goals and dispatched
+        them to 16 concurrent prover agents, with separate proposer, judge and
+        translator roles; 69 sessions total. Agents had access to Loogle search
+        over Mathlib. No online proving service and no human-written proof script
+        were used; every tactic was produced by the agents.
+      cost:
+        wall_time: "Not recorded by the run harness; the run was bounded by a 12 hour cap (43200 s)"
+        spend_usd: "$640-770 (estimated at 25-30% of list price through a third-party API relay; list-price equivalent $2560)"
+        hardware: "API-only; no local Lean compute on the prover side"
+      prompting_notes: >-
+        The system was given the formal statement together with reference proof
+        texts (Granville–Soundararajan, and a Lindeberg–Feller style framework).
+        The coordinator split the target into named Lean goals and dispatched them
+        to prover agents. Complete transcripts of all 69 sessions are retained.
+    - method: "agent"
+      models: ["claude-opus-5.5"]
+      framework: "Claude Code"
+      tool_setup: >-
+        Port from Lean v4.28.0 to v4.35.0-rc2 and Palomar packaging: renamed five
+        deprecated Mathlib lemmas (Finset.prod_le_prod and Finset.prod_le_one to
+        their ₀ variants, Finset.filter_True to Finset.filter_true), added module
+        headers and the ErdosKac namespace, wrote comparator.json, and ran lake
+        build and lake comparator.
+      cost:
+        wall_time: "About 1 hour"
+        spend_usd: "not tracked"
+        hardware: "Linux server for Lean builds"
+      prompting_notes: "n/a"
+  spend_usd: "$640-770 for the proof search (estimated; list-price equivalent $2560); packaging not tracked"
+  notes: >-
+    Fully automated multi-agent proof search. Runming He chose the target theorem
+    and supplied the reference proof texts; no human wrote or repaired Lean code.
+    The proof was first produced against Lean v4.28.0. The port to v4.35.0-rc2
+    (required by Palomar) and the packaging into this repository were done by
+    Claude Code with the same model, at the author's direction; the port changed
+    five renamed Mathlib lemma names only and did not change any statement.
+
+fidelity:
+  divergences: >-
+    None substantive. ω is ArithmeticFunction.cardDistinctFactors and the count is
+    over n ∈ Finset.Icc 1 N, i.e. 1 ≤ n ≤ N. For N ≤ 2, log log N ≤ 0, so the scale
+    sqrt(log log N) is 0 (Lean's Real.sqrt is 0 on nonpositive inputs and x / 0 = 0)
+    and the normalised value is a junk 0 for those finitely many N; this cannot
+    affect the limit. The limiting mass is written as
+    (1 / sqrt (2 * π)) * ∫ t in a..b, exp (-t ^ 2 / 2).
+
+review:
+  status: "self-assessed"
+  reviewers:
+    - "none"
+  notes: >-
+    No external mathematical or Lean review. The proof is machine-checked: Lean's
+    kernel and, through lake comparator, the independent NanoDa and con-ron kernels
+    accept it, and it uses only propext, Classical.choice and Quot.sound. Comparator
+    confirms that Solution proves exactly the statement in Challenge. The proof
+    development itself has not been read by a human reviewer.
+
+alignment:
+  namespace: "ErdosKac"
+  statements:
+    - source: "Erdős–Kac (1940), the main theorem"
+      lean: "ErdosKac.erdos_kac"
+      module: "Solution"
+      status: "proved"
+      note: >-
+        The statement in Challenge.lean and the one proved in Solution.lean are
+        syntactically identical; the proof is ErdosKac.erdos_kac_aux from
+        ErdosKac/Proof.lean.
+
+acknowledgements: >-
+  Lean 4, Mathlib, and the Palomar starter repository. The proof follows the
+  characteristic-function route through Lévy's continuity theorem as presented in
+  Granville–Soundararajan.
